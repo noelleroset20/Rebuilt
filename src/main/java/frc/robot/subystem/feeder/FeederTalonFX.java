@@ -6,11 +6,14 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import edu.wpi.first.units.measure.*;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Current;
+import edu.wpi.first.units.measure.Temperature;
+import edu.wpi.first.units.measure.Voltage;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Inches;
-import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Volts;
 
 public class FeederTalonFX implements FeederIO{
     private final TalonFX feederMotor;
@@ -22,7 +25,7 @@ public class FeederTalonFX implements FeederIO{
     private final StatusSignal<Voltage> feederVoltageSignal;
     private final StatusSignal<Temperature> feederTemperature;
 
-    private final VelocityVoltage control;
+    private VelocityVoltage control;
 
     private AngularVelocity feederTargetRPM;
 
@@ -35,7 +38,7 @@ public class FeederTalonFX implements FeederIO{
         config.CurrentLimits.StatorCurrentLimitEnable = true;
         config.CurrentLimits.SupplyCurrentLimitEnable = true;
 
-        config.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+        config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         config.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
 
         config.Voltage.PeakForwardVoltage = 12;
@@ -51,13 +54,14 @@ public class FeederTalonFX implements FeederIO{
 
         feederMotor.getConfigurator().apply(config);
 
+        //voltage control
         feederVelocitySignal = feederMotor.getVelocity();
         feederSupplySignal = feederMotor.getSupplyCurrent();
         feederStatorSignal = feederMotor.getSupplyCurrent();
         feederVoltageSignal = feederMotor.getMotorVoltage();
         feederTemperature = feederMotor.getDeviceTemp();
 
-        control = new VelocityVoltage(0);
+        control = new VelocityVoltage(0):
         control.Slot = 0;
         control.EnableFOC = false;
         control.IgnoreHardwareLimits = false;
@@ -67,6 +71,13 @@ public class FeederTalonFX implements FeederIO{
 
         feederMotor.setControl(control);
     }
+
+    @Override
+    public void setVoltage(Voltage voltage){
+        control.Velocity = voltage.in(Volts);
+        feederMotor.setControl(control);
+    }
+
     @Override
     public void readPeriodic() {
         StatusSignal.refreshAll(
@@ -87,10 +98,5 @@ public class FeederTalonFX implements FeederIO{
     @Override
     public void writePeriodic() {
 
-    }
-
-    @Override
-    public AngularVelocity calculateFeederRPM(Distance distance) {
-        return AngularVelocity.ofBaseUnits(1510 + (217 * distance.in(Inches)) - (3.81 * distance.in(Inches) * distance.in(Inches)),RPM.getBaseUnit());
     }
 }

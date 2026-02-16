@@ -37,6 +37,7 @@ public class ShooterTalonFX implements ShooterIO {
     private final Follower followerController;
 
     private AngularVelocity leaderTargetRPM;
+    private AngularVelocity followerTargetRPM;
 
     public ShooterTalonFX() {
         leaderMotor = new TalonFX(ShooterConstants.LEADER_MOTOR_ID, ShooterConstants.CANBUS);
@@ -127,6 +128,14 @@ public class ShooterTalonFX implements ShooterIO {
     @Override
     public AngularVelocity calculateLeaderRPM(Distance distance) {
          return AngularVelocity.ofBaseUnits(1510 + (217 * distance.in(Inches)) - (3.81 * distance.in(Inches) * distance.in(Inches)),RPM.getBaseUnit());
+    }
+
+    public void setLeaderRPM(AngularVelocity targetRPM) {
+        this.leaderTargetRPM = targetRPM;
+    }
+
+    public void setFollowerRPM(AngularVelocity targetRPM) {
+        this.followerTargetRPM = targetRPM;
     }
 
 }

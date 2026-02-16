@@ -3,7 +3,6 @@ package frc.robot.subystem.feeder;
 import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.Logger;
 
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.RPM;
 
 public class FeederSubsystem extends FeederTalonFX {
@@ -13,7 +12,7 @@ public class FeederSubsystem extends FeederTalonFX {
 
     private AngularVelocity feederTargetSpeed;
 
-    private FeederMode feederMode;
+    private FeederStates feederState;
 
     private FeederSubsystem() {
         feeder = new FeederTalonFX();
@@ -27,21 +26,21 @@ public class FeederSubsystem extends FeederTalonFX {
     @Override
     public void writePeriodic() {
         Logger.recordOutput("Feeder/Motor/TargetSpeed", feederTargetSpeed);
-        Logger.recordOutput("Feeder/Mode/FeederMode", feederMode);
+        Logger.recordOutput("Feeder/Mode/FeederMode", feederState);
 
         feeder.writePeriodic();
     }
 
-    public void setShooterMode(FeederMode feederMode) {
-        this.feederMode = feederMode;
+    public void setShooterMode(FeederStates feederState) {
+        this.feederState = feederState;
 
-        switch (feederMode)
+        switch (feederState)
         {
-            case on -> {
-                feederTargetSpeed = calculateFeederRPM(Inches.of(6));
+            case ON -> {
+                feederTargetSpeed = AngularVelocity.ofBaseUnits(3000, RPM.getBaseUnit());
             }
 
-            case off -> {
+            case OFF -> {
                 feederTargetSpeed = AngularVelocity.ofBaseUnits(0, RPM.getBaseUnit());
             }
         }
