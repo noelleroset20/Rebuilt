@@ -159,13 +159,13 @@ public class TalonFxSwerveModule implements SwerveModuleIO {
 
         Distance distanceTraveled = Distance.ofBaseUnits(
             (driveAngleSignal.getValue().in(Units.Rotations) / 5.9) * // Gives us rotations per second of wheel
-            (2 * Math.PI * .0508), // .0508 is 2'' in meters
+                (2 * Math.PI * .0508), // .0508 is 2'' in meters
             Units.Meters
         );
 
         LinearVelocity linearVelocity = LinearVelocity.ofBaseUnits(
             (driveAngularVelocitySignal.getValue().in(Units.RotationsPerSecond) / 5.9) * // Gives us rotations per second of wheel
-            (2 * Math.PI * .0508), // .0508 is 2'' in meters
+                (2 * Math.PI * .0508), // .0508 is 2'' in meters
             Units.MetersPerSecond
         );
 
@@ -175,8 +175,8 @@ public class TalonFxSwerveModule implements SwerveModuleIO {
         );
 
         modulePosition = new SwerveModulePosition(
-                distanceTraveled,
-                Rotation2d.fromRadians(steerAngleSignal.getValue().in(Units.Radians))
+            distanceTraveled,
+            Rotation2d.fromRadians(steerAngleSignal.getValue().in(Units.Radians))
         );
 
 
@@ -208,8 +208,8 @@ public class TalonFxSwerveModule implements SwerveModuleIO {
         targetState.cosineScale(currentState.angle);
 
         AngularVelocity targetVelocity = AngularVelocity.ofBaseUnits(
-                (targetState.speedMetersPerSecond/ (2 * Math.PI * .0508)) * 5.9,
-                Units.RotationsPerSecond
+            (targetState.speedMetersPerSecond/ (2 * Math.PI * .0508)) * 5.9,
+            Units.RotationsPerSecond
         );
 
         driveControl.Velocity = targetVelocity.in(Units.RotationsPerSecond);

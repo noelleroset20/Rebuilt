@@ -21,15 +21,6 @@ public class ShooterSubsystem extends ShooterTalonFX {
     {
         shooter = new ShooterTalonFX();
 
-//        if (Robot.isReal())
-//        {
-//
-//        }//else{
-//            shooter = new ShooterSim();
-//        }
-
-//        leaderTargetRPM = 0;
-//        followerTargetRPM = 0;
 
         shooterState = ShooterStates.OFF;
     }
