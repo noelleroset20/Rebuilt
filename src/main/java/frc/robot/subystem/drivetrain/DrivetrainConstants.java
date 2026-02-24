@@ -18,6 +18,14 @@ public class DrivetrainConstants {
 
     public final static String LIMELIGHT_SHOOTER = "limelight-shooter";
 
+    public final static double THETA_KP = 0;
+    public final static double THETA_KI = 0;
+    public final static double THETA_KD = 0;
+
+    public final static double LINEAR_KP = 0;
+    public final static double LINEAR_KI = 0;
+    public final static double LINEAR_KD = 0;
+
     public static final double WHEEL_BASE_WIDTH = Units.inchesToMeters(21); // measure of FL wheel to FR wheel or BL wheel to BR wheel
     public static final double WHEEL_BASE_LENGTH = Units.inchesToMeters(21);
     public final static SwerveDriveKinematics KINEMATICS = new SwerveDriveKinematics(

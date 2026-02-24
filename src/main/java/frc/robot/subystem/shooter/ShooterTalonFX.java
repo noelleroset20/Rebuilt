@@ -32,12 +32,10 @@ public class ShooterTalonFX implements ShooterIO {
     private final StatusSignal<Voltage> followerVoltageSignal;
     private final StatusSignal<Temperature> followerTemperature;
 
-
     private final VelocityVoltage control;
     private final Follower followerController;
 
-    private AngularVelocity leaderTargetRPM;
-    private AngularVelocity followerTargetRPM;
+    private AngularVelocity targetVelocity;
 
     public ShooterTalonFX() {
         leaderMotor = new TalonFX(ShooterConstants.LEADER_MOTOR_ID, ShooterConstants.CANBUS);

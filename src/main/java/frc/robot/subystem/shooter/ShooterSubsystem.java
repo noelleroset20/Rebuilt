@@ -1,6 +1,7 @@
 package frc.robot.subystem.shooter;
 
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.Logger;
 
@@ -11,11 +12,6 @@ public class ShooterSubsystem extends ShooterTalonFX {
     private static ShooterSubsystem INSTANCE;
 
     private final ShooterIO shooter;
-
-    private AngularVelocity leaderTargetRPM;
-    private AngularVelocity followerTargetRPM;
-
-    private ShooterStates shooterState;
 
     private ShooterSubsystem()
     {
