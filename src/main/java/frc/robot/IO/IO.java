@@ -14,8 +14,11 @@ public class IO {
     private static final HashMap<Controls, BooleanSupplier> controlsDigital = new HashMap<>();
 
     public static void Init() {
+        controlsAnalog.put(Controls.horizontalVelocity, () -> primary.getLeftY());
+        controlsAnalog.put(Controls.verticalVelocity, () -> primary.getLeftX());
+        controlsAnalog.put(Controls.omega, () -> primary.getRightX());
 
-
+        controlsDigital.put(Controls.resetGyro, () -> primary.getAButton());
     }
 
      public static DoubleSupplier getJoystick(Controls controls) {

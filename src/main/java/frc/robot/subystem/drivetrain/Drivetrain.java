@@ -145,6 +145,10 @@ public class Drivetrain {
         backRight.simPeriodic();
     }
 
+    public AngularVelocity getRate() {
+        return omegaSingal.getValue();
+    }
+
     public Pose2d getPose() {
         return odometry.getEstimatedPosition();
     }

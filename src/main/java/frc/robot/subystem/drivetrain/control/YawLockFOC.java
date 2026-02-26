@@ -29,6 +29,7 @@ public class YawLockFOC implements DrivetrainControlIO{
                 DrivetrainConstants.THETA_KD
         );
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.setTolerance(.05);
     }
 
     @Override
@@ -44,5 +45,10 @@ public class YawLockFOC implements DrivetrainControlIO{
         ChassisSpeeds speeds = new ChassisSpeeds(horizontalVelocity, verticalVelocity, omega);
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation());
         return speeds;
+    }
+
+    @Override
+    public boolean atSetpoint() {
+        return thetaController.atSetpoint();
     }
 }

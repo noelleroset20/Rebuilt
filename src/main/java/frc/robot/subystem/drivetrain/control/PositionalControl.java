@@ -31,6 +31,10 @@ public class PositionalControl implements DrivetrainControlIO{
             DrivetrainConstants.THETA_KD
         );
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+        horizontalController.setTolerance(.05);
+        verticalController.setTolerance(.05);
+        thetaController.setTolerance(.05);
     }
 
     @Override
@@ -42,5 +46,10 @@ public class PositionalControl implements DrivetrainControlIO{
         );
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, currentPose.getRotation());
         return speeds;
+    }
+
+    @Override
+    public boolean atSetpoint() {
+        return horizontalController.atSetpoint() && verticalController.atSetpoint() && thetaController.atSetpoint();
     }
 }

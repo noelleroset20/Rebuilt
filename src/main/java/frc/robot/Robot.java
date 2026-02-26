@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.CANBus;
+import frc.robot.IO.IO;
 import org.littletonrobotics.junction.LoggedRobot;
 
 
@@ -13,6 +14,7 @@ public class Robot extends LoggedRobot {
     public static final CANBus MECH_CANBUS = new CANBus("Mech");
 
     public Robot() {
+        IO.Init();
     }
 
     @Override
