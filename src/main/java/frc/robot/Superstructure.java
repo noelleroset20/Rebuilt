@@ -46,6 +46,8 @@ public class Superstructure {
     private Pose2d NEAR_FERRY_RIGHT = new Pose2d();
     private Pose2d NEAR_HOPPER = new Pose2d();
 
+    private Pose2d targetPose = new Pose2d();
+
     private final ArrayList<Pose2d> NEAR_TARGET_ARRAY = new ArrayList<>();
     private final ArrayList<Pose2d> NEAR_CLIMBER_ARRAY = new ArrayList<>();
 
@@ -64,7 +66,7 @@ public class Superstructure {
     }
 
     private final SendableChooser<ShooterTargetLockMode> lockShooterChooser;
-    private ShooterTargetLockMode targetLockOn;
+    private ShooterTargetLockMode targetLockOn = ShooterTargetLockMode.AutoAlign;
 
     public Superstructure(){
         setRobotState(RobotStates.Default);
@@ -103,6 +105,8 @@ public class Superstructure {
         }
         ShooterSubsystem.getInstance().setTarget(robotPose, shooterTarget);
 
+        Logger.recordOutput("ShooterTarget", shooterTarget);
+
         Rotation2d targetLock = new Rotation2d(
             robotPose.getX() - shooterTarget.getX(),
             robotPose.getY() - shooterTarget.getY()
@@ -132,18 +136,16 @@ public class Superstructure {
 
         switch (robotState) {
             case Default -> {
-                ClimberSubsystem.getInstance().setState(ClimberStates.retract);
-                IntakeSubsystem.getInstance().setState(IntakeStates.StoredOff);
-
                 manualDrive(robotPose, horizontalVelocity, verticalVelocity, omegaVelocity);
             }
             case Shooting -> {
                 if (targetLockOn == ShooterTargetLockMode.AutoAlign) {
+                    targetPose = new Pose2d(Drivetrain.getInstance().getPose().getX(), Drivetrain.getInstance().getPose().getY(), targetLock.plus(Rotation2d.fromDegrees(90)));
                     Drivetrain.getInstance().setControl(
                         new YawLockFOC(
                             horizontalVelocity,
                             verticalVelocity,
-                            targetLock
+                            targetPose.getRotation()
                         )
                     );
                 }else{
@@ -161,9 +163,9 @@ public class Superstructure {
 //                }
             }
             case AligningClimb -> {
-                Pose2d alignPose = robotPose.nearest(NEAR_CLIMBER_ARRAY);
+                targetPose = robotPose.nearest(NEAR_CLIMBER_ARRAY);
 
-                Drivetrain.getInstance().setControl(new PositionalControl(alignPose));
+                Drivetrain.getInstance().setControl(new PositionalControl(targetPose));
                 ClimberSubsystem.getInstance().setState(ClimberStates.extend);
                 IntakeSubsystem.getInstance().setState(IntakeStates.StoredOff);
                 MopSubsystem.getInstance().setState(MopStates.OFF);
@@ -180,7 +182,9 @@ public class Superstructure {
         ShooterSubsystem.getInstance().writePeriodic();
 
         loggingMechanism();
+
         Logger.recordOutput("Robot State", robotState);
+        Logger.recordOutput("Target Pose", targetPose);
     }
 
     private void manualDrive(Pose2d robotPose, LinearVelocity horizontalVelocity, LinearVelocity verticalVelocity, AngularVelocity omegaVelocity) {
@@ -234,7 +238,7 @@ public class Superstructure {
 
     public void setAlliance(DriverStation.Alliance alliance) {
         this.alliance = alliance;
-        if (alliance == DriverStation.Alliance.Red) {
+        if (alliance == DriverStation.Alliance.Blue) {
             CLIMB_LEFT = FieldConstants.BLUE_CLIMB_LEFT;
             CLIMB_RIGHT = FieldConstants.BLUE_CLIMB_RIGHT;
 

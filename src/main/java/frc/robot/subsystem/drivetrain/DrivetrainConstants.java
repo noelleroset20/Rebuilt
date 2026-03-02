@@ -8,7 +8,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Robot;
 
 public class DrivetrainConstants {
     public final static CANBus DRIVETRAIN_CANBUS = new CANBus("Drivetrain");
@@ -19,7 +18,7 @@ public class DrivetrainConstants {
 
     public final static String LIMELIGHT_SHOOTER = "limelight-shooter";
 
-    public final static double THETA_KP = 0;
+    public final static double THETA_KP = 15;
     public final static double THETA_KI = 0;
     public final static double THETA_KD = 0;
 

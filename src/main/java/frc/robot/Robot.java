@@ -31,7 +31,7 @@ public class Robot extends LoggedRobot {
     public static final double PERIOD = .020; // 20 milliseconds
     public static final CANBus MECH_CANBUS = new CANBus("Mech");
 
-    private final Superstructure superstructure;
+    private final Superstructure superStructure;
 
     private final Trigger resetGyroTrigger;
 
@@ -55,10 +55,11 @@ public class Robot extends LoggedRobot {
         Logger.start();
 
         IO.Init();
-        superstructure = new Superstructure();
-        superstructure.setAlliance(DriverStation.Alliance.Blue);
-        superstructure.setRobotState(RobotStates.Default);
+        superStructure = new Superstructure();
+        superStructure.setAlliance(DriverStation.Alliance.Blue);
+        superStructure.setRobotState(RobotStates.Default);
 
+        CommandScheduler.getInstance().enable();
         CommandScheduler.getInstance().setPeriod(PERIOD);
 
         resetGyroTrigger = new Trigger(IO.getButton(Controls.resetGyro));
@@ -75,6 +76,7 @@ public class Robot extends LoggedRobot {
             () -> IntakeSubsystem.getInstance().setState(IntakeStates.StoredOff)
         ));
 
+
         manualClimbDownTrigger = new Trigger(IO.getButton(Controls.manualClimbDown)); // Need to add code in the climber subsystem to make this work
         manualClimbUpTrigger = new Trigger(IO.getButton(Controls.manualClimbUp));
 
@@ -87,15 +89,15 @@ public class Robot extends LoggedRobot {
         climbAlignTrigger = new Trigger(IO.getButton(Controls.climbAlign));
         climbAlignTrigger.whileTrue(
             new StartEndCommand(
-                () -> superstructure.setRobotState(RobotStates.AligningClimb),
-                () -> superstructure.setRobotState(RobotStates.Default)
+                () -> superStructure.setRobotState(RobotStates.AligningClimb),
+                () -> superStructure.setRobotState(RobotStates.Default)
             )
         );
 
         shooterAlignTrigger = new Trigger(IO.getButton(Controls.alignShooting));
         shooterAlignTrigger.whileTrue(new StartEndCommand(
-            () -> superstructure.setRobotState(RobotStates.Shooting),
-            () -> superstructure.setRobotState(RobotStates.Default)
+            () -> superStructure.setRobotState(RobotStates.Shooting),
+            () -> superStructure.setRobotState(RobotStates.Default)
         ));
 
         shooterTrigger = new Trigger(IO.getButton(Controls.shooting));
@@ -113,9 +115,10 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void robotPeriodic() {
-        superstructure.readPeriodic();
+        superStructure.readPeriodic();
+
         CommandScheduler.getInstance().run();
-        superstructure.writePeriodic();
+        superStructure.writePeriodic();
     }
 
     @Override
@@ -140,6 +143,7 @@ public class Robot extends LoggedRobot {
 
     @Override
     public void disabledPeriodic() {
+        superStructure.setAlliance(DriverStation.getAlliance().orElse(DriverStation.Alliance.Blue));
     }
 
     @Override
